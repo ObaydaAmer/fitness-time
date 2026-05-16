@@ -6,44 +6,56 @@ function TrainerCard({ trainer }) {
 
   if (!trainer) return null;
 
-  const handleBooking = async () => {
-    const token = localStorage.getItem("token");
+const handleBooking = async () => {
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      alert("You must login first");
-      navigate("/login");
-      return;
-    }
+  if (!token) {
+    alert("You must login first");
+    navigate("/login");
+    return;
+  }
 
-    try {
-      const response = await fetch(
-        "https://fitness-time-backend-production.up.railway.app/bookings",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+  try {
 
-          body: JSON.stringify({
-            trainerId: trainer.id,
-            status: "pending",
-          }),
-        }
-      );
+    const currentDate = new Date();
 
-      const data = await response.json();
+    const bookingDate =
+      currentDate.toISOString().split("T")[0];
 
-      if (response.ok) {
-        alert("Booking created successfully");
-      } else {
-        alert(data.message || "Booking failed");
+    const bookingTime =
+      currentDate.toTimeString().split(" ")[0];
+
+    const response = await fetch(
+      "https://fitness-time-backend-production.up.railway.app/bookings",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+
+        body: JSON.stringify({
+          trainerId: trainer.id,
+          bookingDate,
+          bookingTime,
+          status: "pending",
+        }),
       }
-    } catch (err) {
-      console.log(err);
-      alert("Server error");
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Booking created successfully");
+    } else {
+      alert(data.message || "Booking failed");
     }
-  };
+
+  } catch (err) {
+    console.log(err);
+    alert("Server error");
+  }
+};
 
   return (
     <div
