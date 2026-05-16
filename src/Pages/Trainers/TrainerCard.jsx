@@ -48,7 +48,8 @@ const handleBooking = async () => {
     if (response.ok) {
       alert("Booking created successfully");
     } else {
-      alert(data.message || "Booking failed");
+     console.log(data);
+alert(JSON.stringify(data));
     }
 
   } catch (err) {
